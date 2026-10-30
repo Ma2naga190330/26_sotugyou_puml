@@ -10,6 +10,7 @@ boundary "allergy_form.html" as AFP
 control "allergy_form_view" as AFV
 entity "Allergy" as AM
 
+' test
 A -> MP : ①アレルギーの登録をクリックする
 AFP -> AFV : GET（）
 AFV -> AM : 登録済みのアレルギーデータを取得する
