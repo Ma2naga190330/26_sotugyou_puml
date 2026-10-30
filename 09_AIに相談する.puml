@@ -4,45 +4,51 @@ skinparam defaultFontName "Noto Sans CJK JP"
 skinparam monochrome true
 
 actor "保護者/保護者の関係者" as A
+' 相談一覧画面
 boundary "consult_menu.html" as CMP
+' 相談一覧（V）
 control "consult_menu_view" as CMV
+' AI相談画面
 boundary "ai_chat.html" as ACP
+' AI相談（V）
 control "ai_chat_view" as ACV
+' AI相談履歴（DB）
 entity "Ai_consultation" as ACSM
-entity "Learning_model" as LMM
+' 育児記録（DB）
 entity "Childcare_record" as CRM
 
 A -> CMP : ①「AIに相談する」ボタンをクリックする
-ACP -> ACV : GET（）
+CMP -> ACV : GET（）
 alt 過去の相談履歴がある場合
   ACV -> ACSM : これまでのやり取りデータを取得する
   ACV <-- ACSM : これまでのやり取りデータを返却
 end
-ACV --> ACP : 表示する
+ACV --> ACP : AI相談画面を表示する
 
 alt 相談内容を送信せずに「戻る」を選択した場合
   A -> ACP : 「戻る」を選択する
-  CMP -> CMV : GET（）
-  CMV --> CMP : 表示する
+  ACP -> CMV : GET（）
+  CMV --> CMP : 相談一覧画面を表示する
 else 相談内容を送信する場合
   A -> ACP : ③チャット欄に相談内容（メッセージ）を入力し、\n「送信」ボタンをクリックする
   ACP -> ACV : POST（相談内容）
+  ACV -> ACSM : 作成中の相談データを取得する
+  ACV <-- ACSM : 作成中の相談データを返却
   alt 相談内容が未入力の場合
     ACV --> ACP : 送信処理を行わず、エラーメッセージを表示する
-  else 入力されている場合
-    ACP -> ACP : 回答メッセージの生成中は、\n次の相談内容を送信できないように制御する
-    ACV -> LMM : 学習済みモデルを取得する
-    ACV <-- LMM : 学習済みモデルを返却
+  else 回答メッセージを作成中の場合
+    ACV --> ACP : 回答メッセージが生成されるまで、\n次の相談内容を送信できないようにする
+  else 送信できる場合
     ACV -> CRM : 育児記録データを取得する
     ACV <-- CRM : 育児記録データを返却
-    ACV -> ACV : 回答メッセージを生成する
+    ACV -> ACV : 学習済みモデルと育児記録データをもとに\n回答メッセージを生成する
     ACV -> ACSM : 相談内容と回答メッセージを登録する（相談内容、回答メッセージ）
     ACV <-- ACSM : 完了
     ACV --> ACP : 回答メッセージを表示する（続けて相談する場合は③に戻る）
     alt 「戻る」を選択した場合
       A -> ACP : 「戻る」を選択する
-      CMP -> CMV : GET（）
-      CMV --> CMP : 表示する
+      ACP -> CMV : GET（）
+      CMV --> CMP : 相談一覧画面を表示する
     end
   end
 end

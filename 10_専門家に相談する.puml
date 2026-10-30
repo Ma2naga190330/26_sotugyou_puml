@@ -4,21 +4,27 @@ skinparam defaultFontName "Noto Sans CJK JP"
 skinparam monochrome true
 
 actor "保護者/保護者の関係者" as A
+' 相談一覧画面
 boundary "consult_menu.html" as CMP
+' 相談一覧（V）
 control "consult_menu_view" as CMV
+' 専門家相談画面
 boundary "expert_chat.html" as ECP
+' 専門家相談（V）
 control "expert_chat_view" as ECV
+' 利用者（DB）
 entity "User" as UM
+' 専門家相談（DB）
 entity "Expert_consultation" as ECSM
 
 A -> CMP : ①「専門家に相談する」ボタンをクリックする
-ECP -> ECV : GET（）
+CMP -> ECV : GET（）
 alt 過去の相談がある場合
   ECV -> ECSM : これまでのやり取りデータを取得する
   ECV <-- ECSM : これまでのやり取りデータを返却
 end
 ECV -> ECV : 保護者のユーザー名を匿名として表示する
-ECV --> ECP : 表示する
+ECV --> ECP : 専門家相談画面を表示する
 
 alt 「匿名で相談する」をオフにした場合
   A -> ECP : 「匿名で相談する」をオフにする
@@ -26,13 +32,13 @@ alt 「匿名で相談する」をオフにした場合
   ECV -> UM : ユーザー名データを取得する
   ECV <-- UM : ユーザー名データを返却
   ECV -> ECV : 表示名をユーザー名に切り替える
-  ECV --> ECP : 表示する（ユーザー名）
+  ECV --> ECP : 専門家相談画面を表示する（ユーザー名）
 end
 
 alt 相談内容を送信せずに「戻る」ボタンをクリックした場合
   A -> ECP : 「戻る」ボタンをクリックする
-  CMP -> CMV : GET（）
-  CMV --> CMP : 表示する
+  ECP -> CMV : GET（）
+  CMV --> CMP : 相談一覧画面を表示する
 else 相談内容を送信する場合
   A -> ECP : ④チャット欄に相談内容（メッセージ）を入力し、\n「送信」ボタンをクリックする
   ECP -> ECV : POST（相談内容）
@@ -49,7 +55,7 @@ else 相談内容を送信する場合
       alt 専門家が回答を入力している場合
         ECV --> ECP : 「先生が回答中です」と表示する
       else 回答を入力していない場合
-        ECV --> ECP : 表示する
+        ECV --> ECP : 専門家相談画面を表示する
       end
 
       A -> ECP : ⑥「<」（戻るボタン）をクリックする
@@ -59,17 +65,17 @@ else 相談内容を送信する場合
       alt 専門家から返信がある場合
         ECV --> ECP : リダイレクト（302：/consults/）
         CMP -> CMV : GET（自動的な新しいリクエスト）
-        CMV --> CMP : 表示する
+        CMV --> CMP : 相談一覧画面を表示する
       else 返信がない場合
         ECV --> ECP : 「まだ先生から返信がありません」と確認を表示する
         alt 「このまま待つ」ボタンをクリックした場合
           A -> ECP : 「このまま待つ」ボタンをクリックする
           ECP -> ECV : GET（）
-          ECV --> ECP : 表示する（⑥に戻る）
+          ECV --> ECP : 専門家相談画面を表示する（⑥に戻る）
         else 「戻る」ボタンをクリックした場合
           A -> ECP : 「戻る」ボタンをクリックする
-          CMP -> CMV : GET（）
-          CMV --> CMP : 表示する
+          ECP -> CMV : GET（）
+          CMV --> CMP : 相談一覧画面を表示する
         end
       end
     end

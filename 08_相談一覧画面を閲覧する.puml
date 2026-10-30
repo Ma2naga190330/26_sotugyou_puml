@@ -4,24 +4,36 @@ skinparam defaultFontName "Noto Sans CJK JP"
 skinparam monochrome true
 
 actor "保護者/保護者の関係者" as A
+' 育児記録一覧画面
 boundary "record_list.html" as RLP
+' 育児記録一覧（V）
+control "record_list_view" as RLV
+' 相談一覧画面
 boundary "consult_menu.html" as CMP
+' 相談一覧（V）
 control "consult_menu_view" as CMV
+' AI相談履歴（DB）
 entity "Ai_consultation" as ACSM
-entity "Expert_consultation" as ECSM
+' 専門家相談メッセージ履歴（DB）
+entity "Expert_message" as EMM
+
+' 最初の画面表示（育児記録一覧画面）
+A -> RLP : 育児記録一覧画面を開く
+RLP -> RLV : GET（）
+RLV --> RLP : 表示する
 
 A -> RLP : ①「相談」ボタンをクリックする
-CMP -> CMV : GET（）
-CMV -> ACSM : 相談履歴データを取得する
-CMV <-- ACSM : 相談履歴データを返却
-CMV -> ECSM : 相談履歴データを取得する
-CMV <-- ECSM : 相談履歴データを返却
+RLP -> CMV : GET（）
+CMV -> ACSM : AI相談履歴データを取得する
+CMV <-- ACSM : AI相談履歴データを返却
+CMV -> EMM : 専門家相談メッセージ履歴データを取得する
+CMV <-- EMM : 専門家相談メッセージ履歴データを返却
 
 alt 相談履歴の取得に失敗した場合
   CMV --> CMP : エラーを表示する
 else 相談履歴がない場合
-  CMV --> CMP : 表示する（「これまでの相談」を表示しない）
+  CMV --> CMP : 相談一覧画面を表示する（「これまでの相談」を表示しない）
 else 相談履歴がある場合
-  CMV --> CMP : 表示する（AIに相談する・専門家に相談する・これまでの相談）
+  CMV --> CMP : 相談一覧画面を表示する\n（AIに相談する・専門家に相談する・これまでの相談と返信の有無）
 end
 @enduml
