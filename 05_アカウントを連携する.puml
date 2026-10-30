@@ -27,7 +27,7 @@ A1 -> SP : ③「家族を招待する」を選択する
 SP -> SV : POST（家族を招待する）
 SV -> CM : 招待コードと有効期限を登録する（招待コード、有効期限）
 SV <-- CM : 完了
-SV --> SP : リダイレクト（302：/accounts/invite/）
+SV --> SP : リダイレクト（302：/accounts/settings/invite/）
 IP -> IV : GET（自動的な新しいリクエスト）
 IV -> CM : 招待コードデータと有効期限データを取得する
 IV <-- CM : 招待コードデータと有効期限データを返却
@@ -72,7 +72,7 @@ else 同意している場合
   STV -> UM : メールアドレスデータを取得する（メールアドレス）
   STV <-- UM : メールアドレスデータを返却
   alt すでに登録されている場合
-    STV --> STP : リダイレクト（302：/accounts/signup/account/）
+    STV --> STP : リダイレクト（302：/accounts/signup/）
     SAP -> SAV : GET（自動的な新しいリクエスト）
     SAV --> SAP : 「このメールアドレスは既に使用されています」と表示する（⑦に戻る）
   else 登録されていない場合

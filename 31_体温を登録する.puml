@@ -10,28 +10,28 @@ boundary "record_form.html" as RFP
 control "record_form_view" as RFV
 entity "Childcare_record" as CRM
 
-A -> RLP : ①体温ボタンをクリックする
+A -> RLP : ①「体温」ボタンをクリックする
 RFP -> RFV : GET（記録の種類：体温）
 RFV --> RFP : 記録入力シートを表示する
 
-alt 入力画面を閉じた場合
-  A -> RFP : 入力画面を閉じる
+alt 記録入力シートを閉じた場合
+  A -> RFP : 記録入力シートを閉じる
   RLP -> RLV : GET（）
   RLV --> RLP : 表示する（保存しない）
 else 保存ボタンをクリックした場合
-  A -> RFP : ②時刻、体温を記述して保存ボタンをクリックする
-  RFP -> RFV : POST（記録の種類：体温、測定時刻、体温）
+  A -> RFP : ③時刻と体温を選択して「保存する」ボタンをクリックする
+  RFP -> RFV : POST（記録の種類：体温、時刻、体温）
   alt 記録できる範囲（34.0〜42.0℃）を外れている場合
     RFV --> RFP : エラーを表示する（③に戻る）
   else 正しく入力されている場合
-    RFV -> CRM : 体温を記録する（測定時刻、体温、記録者）
+    RFV -> CRM : 体温を記録する（時刻、体温、記録者）
     RFV <-- CRM : 完了
     alt 記録の保存に失敗した場合
       RFV --> RFP : エラーを表示する（③に戻る）
     else 記録した場合
       RFV --> RFP : リダイレクト（302：/records/）
       RLP -> RLV : GET（自動的な新しいリクエスト）
-      RLV --> RLP : 「記録しました」と表示する
+      RLV --> RLP : 「「体温何℃」を何時何分に記録しました」と表示する
     end
   end
 end

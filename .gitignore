@@ -1,2 +1,4 @@
 # 設計書フォルダ（GitHubに送らない）
 /設計書/
+/.claude-plugin/
+/skills/

@@ -4,19 +4,24 @@ skinparam defaultFontName "Noto Sans CJK JP"
 skinparam monochrome true
 
 actor "保護者/保護者の関係者/専門家" as A
+boundary "base.html" as BP
 boundary "settings.html" as SP
 control "settings_view" as SV
 boundary "login.html" as LP
 control "login_view" as LV
 
-A -> SP : ①「ログアウト」ボタンをクリックする
+A -> BP : ①「設定」ボタンをクリックする
+SP -> SV : GET（）
+SV --> SP : 表示する
+
+A -> SP : ③「ログアウト」ボタンをクリックする
 SP -> SP : ログアウト確認ダイアログを表示する
 
 alt 「キャンセル」ボタンをクリックした場合
   A -> SP : 「キャンセル」ボタンをクリックする
-  SP -> SP : 確認ダイアログを閉じる（ログアウト処理を行わない）
+  SP -> SP : 確認ダイアログを閉じる（ログアウト処理を行わず、設定画面に戻る）
 else 「ログアウト」ボタンをクリックした場合
-  A -> SP : ②「ログアウト」ボタンをクリックする
+  A -> SP : ⑤「ログアウト」ボタンをクリックする
   SP -> SV : POST（ログアウト）
   SV -> SV : 現在のセッション情報を破棄する
   alt セッション破棄処理でエラーが発生した場合
