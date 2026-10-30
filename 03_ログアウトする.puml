@@ -11,8 +11,8 @@ boundary "login.html" as LP
 control "login_view" as LV
 
 A -> BP : ①「設定」ボタンをクリックする
-SP -> SV : GET（）
-SV --> SP : 表示する
+BP -> SV : GET（）
+SV --> SP : 設定画面を表示する
 
 A -> SP : ③「ログアウト」ボタンをクリックする
 SP -> SP : ログアウト確認ダイアログを表示する

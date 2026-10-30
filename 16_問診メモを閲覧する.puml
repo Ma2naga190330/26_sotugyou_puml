@@ -13,7 +13,7 @@ entity "Medical_history" as MHM
 entity "Medical_interview" as MIM
 
 A -> BP : ①問診メモをクリックする
-MP -> MV : GET（）
+BP -> MV : GET（）
 MV -> BM : 子どもの基本情報データを取得する
 MV <-- BM : 子どもの基本情報データを返却
 MV -> AM : アレルギーデータを取得する
@@ -31,5 +31,5 @@ end
 alt その他メモが記入されていない場合
   MV --> MP : その他メモの記入欄を空欄で表示する
 end
-MV --> MP : 表示する
+MV --> MP : 問診メモ画面を表示する
 @enduml

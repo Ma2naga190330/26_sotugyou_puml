@@ -14,9 +14,8 @@ boundary "email_done.html" as EDP
 control "email_done_view" as EDV
 
 A -> BP : ①「設定」ボタンをクリックする
-BP -> SP : 画面遷移
-SP -> SV : GET()
-SV --> SP : 表示する
+BP -> SV : GET()
+SV --> SP : 設定画面を表示する
 
 A -> SP : ②「アカウント情報を更新」ボタンをクリックする
 SP -> AEP : 画面遷移

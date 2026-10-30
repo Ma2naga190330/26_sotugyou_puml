@@ -10,7 +10,7 @@ control "record_list_view" as RLV
 entity "Childcare_record" as CRM
 
 A -> BP : ①「記録」ボタンをクリックする
-RLP -> RLV : GET（）
+BP -> RLV : GET（）
 RLV -> CRM : 育児記録のデータを取得する（表示する日）
 RLV <-- CRM : 育児記録データを返却
 alt 記録の取得に失敗した場合
@@ -18,7 +18,7 @@ alt 記録の取得に失敗した場合
 else 表示する日の記録がない場合
   RLV --> RLP : 「記録が登録されていません」と表示する
 else 表示する日の記録がある場合
-  RLV --> RLP : 表示する
+  RLV --> RLP : 育児記録一覧画面を表示する
 end
 
 alt 閲覧したい育児記録をクリックした場合

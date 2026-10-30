@@ -10,10 +10,10 @@ control "settings_view" as SV
 entity "Collaboration" as CM
 
 A -> BP : ①「設定」ボタンをクリックする
-SP -> SV : GET（）
+BP -> SV : GET（）
 SV -> CM : 連携中のアカウントデータを取得する
 SV <-- CM : 連携中のアカウントデータを返却
-SV --> SP : 表示する（連携中のアカウント）
+SV --> SP : 設定画面を表示する（連携中のアカウント）
 
 A -> SP : ③「解除」ボタンをクリックする
 SP -> SP : 解除の確認メッセージを表示する
