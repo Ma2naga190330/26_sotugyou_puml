@@ -29,11 +29,13 @@ else 保存ボタンをクリックした場合
   FFV -> CRM : 母乳を記録する（時刻、記録者）
   FFV <-- CRM : 完了
   alt 記録の保存に失敗した場合
-    FFV --> FFP : エラーを表示する（⑤に戻る）
+    FFV --> FFP : リダイレクト（302：/records/）
+    RLP -> RLV : GET（自動的な新しいリクエスト）
+    RLV --> RLP : エラーを表示する（処理を中断する）
   else 記録した場合
     FFV --> FFP : リダイレクト（302：/records/）
     RLP -> RLV : GET（自動的な新しいリクエスト）
-    RLV --> RLP : 「登録しました」と表示する
+    RLV --> RLP : 「「授乳(母乳)」を何時何分に記録しました」と表示する
   end
 end
 @enduml

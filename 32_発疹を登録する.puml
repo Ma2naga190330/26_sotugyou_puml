@@ -6,17 +6,35 @@ skinparam monochrome true
 actor "保護者/保護者の関係者" as A
 boundary "record_list.html" as RLP
 control "record_list_view" as RLV
+boundary "record_form.html" as RFP
+control "record_form_view" as RFV
 entity "Childcare_record" as CRM
 
-A -> RLP : ①発疹ボタンをクリックする
-RLP -> RLV : POST（記録の種類：発疹）
-RLV -> CRM : 発疹を記録する（発疹の記録、記録した時刻、記録者）
-RLV <-- CRM : 完了
-alt 記録の保存に失敗した場合
-  RLV --> RLP : エラーを表示する（育児記録一覧画面に戻る）
-else 記録した場合
-  RLV --> RLP : リダイレクト（302：/records/）
-  RLP -> RLV : GET（自動的な新しいリクエスト）
-  RLV --> RLP : 「登録しました」と表示する
+A -> RLP : ①「発疹」ボタンをクリックする
+RFP -> RFV : GET（記録の種類：発疹）
+RFV --> RFP : 記録入力シートを表示する
+
+alt 記録入力シートを閉じた場合
+  A -> RFP : 記録入力シートを閉じる
+  RLP -> RLV : GET（）
+  RLV --> RLP : 表示する（保存しない）
+else 「保存する」ボタンをクリックした場合
+  A -> RFP : ③時刻を選択し、備考欄に記述して「保存する」ボタンをクリックする
+  RFP -> RFV : POST（記録の種類：発疹、時刻、備考の内容）
+  alt 備考欄に記述がない場合
+    RFV --> RFP : エラーを表示し、処理を中止する
+  else 正しく入力されている場合
+    RFV -> CRM : 発疹を記録する（時刻、備考の内容、記録者）
+    RFV <-- CRM : 完了
+    alt 記録の保存に失敗した場合
+      RFV --> RFP : リダイレクト（302：/records/）
+      RLP -> RLV : GET（自動的な新しいリクエスト）
+      RLV --> RLP : エラーを表示する（処理を中断する）
+    else 記録した場合
+      RFV --> RFP : リダイレクト（302：/records/）
+      RLP -> RLV : GET（自動的な新しいリクエスト）
+      RLV --> RLP : 「「発疹」を何時何分に記録しました」と表示する
+    end
+  end
 end
 @enduml

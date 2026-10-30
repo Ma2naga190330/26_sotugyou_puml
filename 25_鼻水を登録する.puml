@@ -17,6 +17,6 @@ alt 記録の保存に失敗した場合
 else 記録した場合
   RLV --> RLP : リダイレクト（302：/records/）
   RLP -> RLV : GET（自動的な新しいリクエスト）
-  RLV --> RLP : 「登録しました」と表示する
+  RLV --> RLP : 「「鼻水」を何時何分に記録しました」と表示する
 end
 @enduml
