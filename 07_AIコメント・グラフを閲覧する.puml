@@ -9,8 +9,6 @@ boundary "graph.html" as GP
 control "graph_view" as GV
 entity "Childcare_record" as CRM
 entity "Chick" as CHM
-entity "Ai_comment" as ACM
-entity "Graph" as GM
 
 A -> RLP : ①「グラフ」ボタンをクリックする
 GP -> GV : GET（）
@@ -27,16 +25,12 @@ else 直近1週間の育児記録がある場合
     GV <-- CHM : ひよこの画像データを返却
     GV -> GV : 状態に応じてひよこの画像を変更する
   end
-  GV -> ACM : AIコメントを登録する（AIコメント）
-  GV <-- ACM : 完了
   GV -> CRM : 体温の記録データを取得する
   GV <-- CRM : 体温の記録データを返却
-  GV -> GV : 記録内容（体温）をもとに生活リズムのグラフを作成する
-  GV -> GM : 生活リズムのグラフを登録する
-  GV <-- GM : 完了
   alt グラフにできるデータが未登録の場合
     GV --> GP : エラーを表示する
-  else グラフを作成できた場合
+  else グラフにできるデータがある場合
+    GV -> GV : 記録内容（体温）をもとに生活リズムのグラフを作成する
     GV --> GP : 表示する（状態、AIコメント、グラフ）
   end
 end
