@@ -13,10 +13,10 @@ entity "User" as UM
 boundary "email_done.html" as EDP
 control "email_done_view" as EDV
 
-A -> BP : ① 保護者は、「設定」ボタンをクリックする
-BP -> SP : 画面遷移
-SP -> SV : GET()
-SV --> SP : ② システムは、設定画面を表示する
+
+A -> BP : ①「設定」ボタンをクリックする
+BP -> SV : GET()
+SV --> SP : 設定画面を表示する
 
 A -> SP : ③ 保護者は、「アカウント情報を更新」ボタンをクリックする
 SP -> AEP : 画面遷移
