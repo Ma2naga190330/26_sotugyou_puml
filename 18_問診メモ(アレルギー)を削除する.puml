@@ -1,0 +1,34 @@
+@startuml
+title 問診メモ(アレルギー)を削除する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "memo.html" as MP
+control "memo_view" as MV
+entity "Allergy" as AM
+
+A -> MP : ①アレルギー一覧で、削除するアレルギーの「削除」ボタンをクリックする
+MP -> MP : 削除の確認メッセージを表示する
+
+alt 「キャンセル」ボタンをクリックした場合
+  A -> MP : 「キャンセル」ボタンをクリックする
+  MP -> MP : 確認メッセージを閉じる（削除しない）
+else 「削除する」ボタンをクリックした場合
+  A -> MP : ②「削除する」ボタンをクリックする
+  MP -> MV : POST（アレルギーID）
+  MV -> AM : 選択されたアレルギーを削除する（アレルギーID）
+  MV <-- AM : 完了
+  alt 削除に失敗した場合
+    MV --> MP : エラーを表示する
+  else 削除した場合
+    MV --> MP : リダイレクト（302：/memos/）
+    MP -> MV : GET（自動的な新しいリクエスト）
+    alt アレルギーがすべて削除された場合
+      MV --> MP : 「登録されているアレルギーはありません」と表示する
+    else アレルギーが残っている場合
+      MV --> MP : 表示する
+    end
+  end
+end
+@enduml

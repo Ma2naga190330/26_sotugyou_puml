@@ -1,0 +1,30 @@
+@startuml
+title ログアウトする
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者/専門家" as A
+boundary "settings.html" as SP
+control "settings_view" as SV
+boundary "login.html" as LP
+control "login_view" as LV
+
+A -> SP : ①「ログアウト」ボタンをクリックする
+SP -> SP : ログアウト確認ダイアログを表示する
+
+alt 「キャンセル」ボタンをクリックした場合
+  A -> SP : 「キャンセル」ボタンをクリックする
+  SP -> SP : 確認ダイアログを閉じる（ログアウト処理を行わない）
+else 「ログアウト」ボタンをクリックした場合
+  A -> SP : ②「ログアウト」ボタンをクリックする
+  SP -> SV : POST（ログアウト）
+  SV -> SV : 現在のセッション情報を破棄する
+  alt セッション破棄処理でエラーが発生した場合
+    SV --> SP : 「ログアウトに失敗しました」と表示する
+  else 破棄できた場合
+    SV --> SP : リダイレクト（302：/accounts/login/）
+    LP -> LV : GET（自動的な新しいリクエスト）
+    LV --> LP : 表示する
+  end
+end
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+title 問診メモ(備考)を削除する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "memo.html" as MP
+control "memo_view" as MV
+entity "Medical_interview" as MIM
+
+A -> MP : ①削除する備考の「削除」ボタンをクリックする
+MP -> MP : 削除の確認メッセージを表示する
+
+alt 「キャンセル」ボタンをクリックした場合
+  A -> MP : 「キャンセル」ボタンをクリックする
+  MP -> MP : 確認メッセージを閉じる（削除しない）
+else 「削除する」ボタンをクリックした場合
+  A -> MP : ②「削除する」ボタンをクリックする
+  MP -> MV : POST（備考ID）
+  MV -> MIM : 選択された備考を削除する（備考ID）
+  MV <-- MIM : 完了
+  alt 削除に失敗した場合
+    MV --> MP : エラーを表示する
+  else 削除した場合
+    MV --> MP : リダイレクト（302：/memos/）
+    MP -> MV : GET（自動的な新しいリクエスト）
+    alt 備考がすべて削除された場合
+      MV --> MP : 「備考はまだ登録されていません」と表示する
+    else 備考が残っている場合
+      MV --> MP : 表示する
+    end
+  end
+end
+@enduml

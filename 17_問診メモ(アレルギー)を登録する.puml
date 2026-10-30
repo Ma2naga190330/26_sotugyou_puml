@@ -1,0 +1,52 @@
+@startuml
+title 問診メモ(アレルギー)を登録する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "memo.html" as MP
+control "memo_view" as MV
+boundary "allergy_form.html" as AFP
+control "allergy_form_view" as AFV
+entity "Allergy" as AM
+
+A -> MP : ①アレルギーの登録をクリックする
+AFP -> AFV : GET（）
+AFV -> AM : 登録済みのアレルギーデータを取得する
+AFV <-- AM : 登録済みのアレルギーデータを返却
+AFV --> AFP : アレルギーの選択肢を、登録済みのものを選択した状態で表示する
+
+alt 「その他」を選択した場合
+  A -> AFP : 「その他」を選択する
+  AFP -> AFP : 記述欄を表示する
+end
+
+alt 戻るを選択した場合
+  A -> AFP : 戻るを選択する
+  MP -> MV : GET（）
+  MV --> MP : 表示する（保存しない）
+else 登録をクリックした場合
+  A -> AFP : ②当てはまるアレルギーを選択し\n（当てはまらなくなったものは選択を外し）、登録をクリックする
+  AFP -> AFV : POST（選択されたアレルギー、「その他」の記述）
+  alt 「その他」が選択されているのに記述が未入力の場合
+    AFV --> AFP : エラーを表示する（④に戻る）
+  else 選択が0件の場合
+    AFV --> AFP : 「登録済みのアレルギーをすべて解除しますか」と確認を表示する
+    alt キャンセルした場合
+      A -> AFP : ③キャンセルする
+      AFP -> AFV : GET（）
+      AFV --> AFP : 表示する（④に戻る）
+    end
+  else 選択が1件以上の場合
+    AFV -> AM : 選択されたアレルギーを登録する（「その他」の記述を含む）
+    AFV <-- AM : 完了
+    alt 保存に失敗した場合
+      AFV --> AFP : エラーを表示する（④に戻る）
+    else 保存した場合
+      AFV --> AFP : リダイレクト（302：/memos/）
+      MP -> MV : GET（自動的な新しいリクエスト）
+      MV --> MP : 表示する
+    end
+  end
+end
+@enduml

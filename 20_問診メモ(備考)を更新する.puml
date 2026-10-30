@@ -1,0 +1,51 @@
+@startuml
+title 問診メモ(備考)を更新する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "memo.html" as MP
+control "memo_view" as MV
+boundary "note_form.html" as NFP
+control "note_form_view" as NFV
+entity "Medical_interview" as MIM
+
+A -> MP : ①変更する備考の「更新」ボタンをクリックする
+NFP -> NFV : GET（備考ID）
+NFV -> MIM : 選択された備考データを取得する（備考ID）
+NFV <-- MIM : 選択された備考データを返却
+NFV --> NFP : 登録済みの内容を表示する
+
+alt 「戻る」ボタンをクリックした場合
+  A -> NFP : 「戻る」ボタンをクリックする
+  MP -> MV : GET（）
+  MV --> MP : 表示する（変更しない）
+else 「登録確認」ボタンをクリックした場合
+  A -> NFP : ②備考の内容を修正し、「登録確認」ボタンをクリックする
+  NFP -> NFV : POST（備考ID、備考の内容）
+  alt 内容が未入力の場合
+    NFV --> NFP : 「入力してください」と表示する（④に戻る）
+  else 500文字を超えている場合
+    NFV --> NFP : エラーを表示する（④に戻る）
+  else 正しい場合
+    NFV --> NFP : 確認表示を表示する
+    alt 「修正する」ボタンをクリックした場合
+      A -> NFP : 「修正する」ボタンをクリックする
+      NFP -> NFV : GET（備考ID、備考の内容）
+      NFV --> NFP : 入力した内容を表示する（④に戻る）
+    else 「変更する」ボタンをクリックした場合
+      A -> NFP : ③「変更する」ボタンをクリックする
+      NFP -> NFV : POST（備考ID、備考の内容）
+      NFV -> MIM : 変更した備考を登録する（備考ID、備考の内容）
+      NFV <-- MIM : 完了
+      alt 保存に失敗した場合
+        NFV --> NFP : エラーを表示する（④に戻る）
+      else 保存した場合
+        NFV --> NFP : リダイレクト（302：/memos/）
+        MP -> MV : GET（自動的な新しいリクエスト）
+        MV --> MP : 表示する
+      end
+    end
+  end
+end
+@enduml

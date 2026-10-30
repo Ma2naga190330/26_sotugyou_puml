@@ -1,0 +1,45 @@
+@startuml
+title 育児記録を更新する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "record_list.html" as RLP
+control "record_list_view" as RLV
+boundary "record_form.html" as RFP
+control "record_form_view" as RFV
+entity "Childcare_record" as CRM
+
+' record_form.html：授乳の記録は feeding_form.html（同じ流れ）
+A -> RLP : ①「編集」ボタンをクリックする
+RFP -> RFV : GET（記録ID）
+RFV -> CRM : 現在登録されている記録データを取得する（記録ID）
+RFV <-- CRM : 現在登録されている記録データを返却
+alt 記録の取得に失敗した場合
+  RFV --> RFP : リダイレクト（302：/records/）
+  RLP -> RLV : GET（自動的な新しいリクエスト）
+  RLV --> RLP : エラーを表示する
+else 取得できた場合
+  RFV --> RFP : 表示する（現在登録されている内容）
+end
+
+alt 「閉じる」ボタンをクリックした場合
+  A -> RFP : 「閉じる」ボタンをクリックする
+  RLP -> RLV : GET（）
+  RLV --> RLP : 表示する（保存しない）
+else 「保存する」ボタンをクリックした場合
+  A -> RFP : ②データを修正し、「保存する」ボタンをクリックする
+  RFP -> RFV : POST（記録ID、修正した内容）
+  alt 修正した内容が、その記録を登録するときの条件を満たしていない場合
+    RFV --> RFP : エラーを表示する（③に戻る）
+  else 満たしている場合
+    RFV -> CRM : 修正した内容を登録する（記録ID、修正した内容）
+    RFV <-- CRM : 完了
+    alt 保存に失敗した場合
+      RFV --> RFP : エラーを表示する（③に戻る）
+    else 保存した場合
+      RFV --> RFP : 更新完了メッセージを表示する
+    end
+  end
+end
+@enduml

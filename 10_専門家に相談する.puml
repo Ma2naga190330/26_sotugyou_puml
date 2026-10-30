@@ -1,0 +1,78 @@
+@startuml
+title 専門家に相談する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "consult_menu.html" as CMP
+control "consult_menu_view" as CMV
+boundary "expert_chat.html" as ECP
+control "expert_chat_view" as ECV
+entity "User" as UM
+entity "Expert_consultation" as ECSM
+
+A -> CMP : ①「専門家に相談する」ボタンをクリックする
+ECP -> ECV : GET（）
+alt 過去の相談がある場合
+  ECV -> ECSM : これまでのやり取りデータを取得する
+  ECV <-- ECSM : これまでのやり取りデータを返却
+end
+alt 専門家が回答を入力している場合
+  ECV --> ECP : 「先生が回答中です」と表示する
+else 回答を入力していない場合
+  ECV -> ECV : 保護者のユーザー名を匿名として表示する
+  ECV --> ECP : 表示する
+end
+
+alt 「匿名で相談する」をオフにした場合
+  A -> ECP : 「匿名で相談する」をオフにする
+  ECP -> ECV : POST（匿名：オフ）
+  ECV -> UM : ユーザー名データを取得する
+  ECV <-- UM : ユーザー名データを返却
+  ECV -> ECV : 表示名をユーザー名に切り替える
+  ECV --> ECP : 表示する（ユーザー名）
+end
+
+A -> ECP : ②チャット欄に相談内容（メッセージ）を入力し、\n「送信」ボタンをクリックする
+ECP -> ECV : POST（相談内容）
+alt 相談内容が未入力の場合
+  ECV --> ECP : 送信しない
+else 入力されている場合
+  ECV -> ECSM : メッセージ内容を登録する（相談内容）
+  ECV <-- ECSM : 完了
+  alt 登録に失敗した場合
+    ECV --> ECP : エラーを表示し、入力した相談内容を残したまま④に戻る
+  else 登録した場合
+    ECV --> ECP : リダイレクト（302：/consults/expert/）
+    ECP -> ECV : GET（自動的な新しいリクエスト）
+    ECV --> ECP : 表示する
+  end
+end
+
+alt 相談内容を送信せずに「戻る」ボタンをクリックした場合
+  A -> ECP : 「戻る」ボタンをクリックする
+  CMP -> CMV : GET（）
+  CMV --> CMP : 表示する
+else 「戻る」ボタンをクリックした場合
+  A -> ECP : 「戻る」ボタンをクリックする
+  ECP -> ECV : GET（戻る）
+  ECV -> ECSM : 返信データを取得する
+  ECV <-- ECSM : 返信データを返却
+  alt 専門家から返信がある場合
+    ECV --> ECP : リダイレクト（302：/consults/）
+    CMP -> CMV : GET（自動的な新しいリクエスト）
+    CMV --> CMP : 表示する
+  else 返信がない場合
+    ECV --> ECP : 「まだ先生から返信がありません」と確認を表示する
+    alt 「このまま待つ」ボタンをクリックした場合
+      A -> ECP : ③「このまま待つ」ボタンをクリックする
+      ECP -> ECV : GET（）
+      ECV --> ECP : 表示する（⑥に戻る）
+    else 「戻る」ボタンをクリックした場合
+      A -> ECP : ③「戻る」ボタンをクリックする
+      CMP -> CMV : GET（）
+      CMV --> CMP : 表示する
+    end
+  end
+end
+@enduml

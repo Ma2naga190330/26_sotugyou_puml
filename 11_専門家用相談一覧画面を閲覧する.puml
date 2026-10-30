@@ -1,0 +1,40 @@
+@startuml
+title 専門家用相談一覧画面を閲覧する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "専門家" as A
+boundary "inbox.html" as IBP
+control "inbox_view" as IBV
+entity "Expert_consultation" as ECSM
+entity "User" as UM
+
+' 最初の画面表示（起点の操作は記述にない）
+A -> IBP : 専門家用 相談一覧画面を開く
+IBP -> IBV : GET（）
+IBV -> ECSM : 相談データを取得する
+IBV <-- ECSM : 相談データを返却
+IBV -> UM : 質問者の名前データを取得する
+IBV <-- UM : 質問者の名前データを返却
+alt 未返信の相談がない場合
+  IBV --> IBP : 「未返信の相談はありません」と表示する
+else 未返信の相談がある場合
+  alt 他の専門家が対応している場合
+    IBV --> IBP : 表示する（その相談は選択できないようにし、対応中であることを表示する）
+  else 対応している専門家がいない場合
+    IBV --> IBP : 表示する（質問者の名前、チャット内容の一部、未対応中であること）
+  end
+end
+
+alt 返信済みの相談を選択した場合
+  A -> IBP : ①返信済みの相談を選択する
+  IBP -> IBV : GET（相談）
+  IBV -> ECSM : 質問者名データとチャット内容の一部データを取得する（相談）
+  IBV <-- ECSM : 質問者名データとチャット内容の一部データを返却
+  IBV --> IBP : 過去の相談履歴を表示する
+else 対応中の相談をクリックした場合
+  A -> IBP : ①対応中の相談をクリックする
+  IBP -> IBV : GET（相談）
+  IBV --> IBP : 「この相談は現在ほかの先生が対応中です」と表示する
+end
+@enduml

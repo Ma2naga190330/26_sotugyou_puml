@@ -1,0 +1,47 @@
+@startuml
+title AIコメント/グラフを閲覧する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "record_list.html" as RLP
+boundary "graph.html" as GP
+control "graph_view" as GV
+entity "Childcare_record" as CRM
+entity "Chick" as CHM
+entity "Ai_comment" as ACM
+entity "Graph" as GM
+
+A -> RLP : ①「グラフ」ボタンをクリックする
+GP -> GV : GET（）
+GV -> CRM : 直近の育児記録データを取得する
+GV <-- CRM : 直近の育児記録データを返却
+
+alt 直近1週間の育児記録がない場合
+  GV --> GP : 「データが登録されていません」と表示し、\nAIコメントとグラフを表示しない
+else 直近1週間の育児記録がある場合
+  GV -> GV : 育児記録から子どもの状態を判定する\n（げんき・熱がある・おやすみ中）
+  alt 育児記録が未登録の場合
+    GV -> GV : AIコメントを生成しない
+  else 育児記録が登録されている場合
+    GV -> GV : 判定した状態と育児記録をもとにAIコメントを生成する
+    alt 咳・発熱・風邪・睡眠中など通常と異なる状態が登録された場合
+      GV -> CHM : ひよこの画像データを取得する（状態）
+      GV <-- CHM : ひよこの画像データを返却
+      GV -> GV : 状態に応じてひよこの画像を変更する
+    end
+    GV -> ACM : AIコメントを登録する（AIコメント）
+    GV <-- ACM : 完了
+  end
+  GV -> CRM : 睡眠・授乳と食事・発熱の記録データを取得する
+  GV <-- CRM : 睡眠・授乳と食事・発熱の記録データを返却
+  GV -> GV : 生活リズムのグラフを作成する
+  GV -> GM : 生活リズムのグラフを登録する
+  GV <-- GM : 完了
+  alt グラフにできるデータが未登録の場合
+    GV --> GP : エラーを表示する
+  else グラフを作成できた場合
+    GV --> GP : 表示する（状態、AIコメント、グラフ）
+  end
+end
+@enduml

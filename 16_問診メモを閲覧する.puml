@@ -1,0 +1,35 @@
+@startuml
+title 問診メモを閲覧する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "base.html" as BP
+boundary "memo.html" as MP
+control "memo_view" as MV
+entity "Baby" as BM
+entity "Allergy" as AM
+entity "Medical_history" as MHM
+entity "Medical_interview" as MIM
+
+A -> BP : ①問診メモをクリックする
+MP -> MV : GET（）
+MV -> BM : 子どもの基本情報データを取得する
+MV <-- BM : 子どもの基本情報データを返却
+MV -> AM : アレルギーデータを取得する
+MV <-- AM : アレルギーデータを返却
+MV -> MHM : 病歴・受診歴データを取得する
+MV <-- MHM : 病歴・受診歴データを返却
+MV -> MIM : その他メモデータを取得する
+MV <-- MIM : その他メモデータを返却
+alt アレルギーが登録されていない場合
+  MV -> MV : 「アレルギーは登録されていません」と表示する
+end
+alt 病歴・受診歴がない場合
+  MV -> MV : 「病歴・受診歴はありません」と表示する
+end
+alt その他メモが記入されていない場合
+  MV -> MV : 記入欄を空欄で表示する
+end
+MV --> MP : 表示する
+@enduml

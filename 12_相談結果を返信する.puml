@@ -1,0 +1,60 @@
+@startuml
+title 相談結果を返信する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "専門家" as A
+boundary "inbox.html" as IBP
+control "inbox_view" as IBV
+boundary "chat.html" as CP
+control "chat_view" as CV
+entity "Expert_consultation" as ECSM
+
+A -> IBP : ①返信したい相談をクリックする
+IBP -> IBV : GET（相談）
+IBV -> ECSM : 対応中データを取得する（相談）
+IBV <-- ECSM : 対応中データを返却
+alt ほかの専門家が対応中の場合
+  IBV --> IBP : 「この相談は現在ほかの先生が対応中です」と表示する（チャット画面を表示しない）
+else 対応中ではない場合
+  IBV --> IBP : リダイレクト（302：/experts/chat/<pk>/）
+  CP -> CV : GET（自動的な新しいリクエスト）
+  CV -> ECSM : 対応中を登録する（相談）
+  CV <-- ECSM : 完了
+  CV --> CP : 表示する
+end
+
+alt 返信を送信する場合
+  A -> CP : ②相談内容を確認し、返信内容を入力して\n「送信」ボタンをクリックする
+  CP -> CV : POST（返信内容）
+  alt 返信内容が未入力の場合
+    CV --> CP : 送信しない
+  else 入力されている場合
+    CV -> ECSM : 返信内容を登録する（返信内容）
+    CV <-- ECSM : 完了
+    alt 登録に失敗した場合
+      CV --> CP : エラーを表示し、入力した返信内容を残したまま④に戻る
+    else 登録した場合
+      CV -> ECSM : 未返信を返信済みに変える
+      CV <-- ECSM : 完了
+      CV -> CV : 保護者に返信があったことを通知する
+      CV --> CP : 表示する（専門家が続けてメッセージを送る場合は④に戻る）
+    end
+  end
+  A -> CP : ③「戻る」ボタンをクリックする
+  CP -> CV : POST（戻る）
+  CV -> ECSM : 対応中を解除する
+  CV <-- ECSM : 完了
+  CV --> CP : リダイレクト（302：/experts/inbox/）
+  IBP -> IBV : GET（自動的な新しいリクエスト）
+  IBV --> IBP : 表示する
+else 返信を送信せずに「戻る」ボタンをクリックした場合
+  A -> CP : 「戻る」ボタンをクリックする
+  CP -> CV : POST（戻る）
+  CV -> ECSM : 対応中を解除する（相談は未返信のまま）
+  CV <-- ECSM : 完了
+  CV --> CP : リダイレクト（302：/experts/inbox/）
+  IBP -> IBV : GET（自動的な新しいリクエスト）
+  IBV --> IBP : 表示する
+end
+@enduml

@@ -1,0 +1,92 @@
+@startuml
+title アカウントを新規登録する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+' ① 登場人物（左から画面遷移の順）
+actor "保護者/保護者の関係者" as A
+boundary "login.html" as LP
+control "login_view" as LV
+boundary "signup_account.html" as SAP
+control "signup_account_view" as SAV
+boundary "signup_child.html" as SCP
+control "signup_child_view" as SCV
+boundary "signup_terms.html" as STP
+control "signup_terms_view" as STV
+entity "User" as UM
+entity "Baby" as BM
+boundary "record_list.html" as RLP
+control "record_list_view" as RLV
+
+' ② 最初の画面表示（ログイン画面）
+A -> LP : ログイン画面を開く
+LP -> LV : GET（）
+LV --> LP : 表示する
+
+' ③ 新規登録（アカウント）画面を表示する（①②）
+A -> LP : ①「新規登録」ボタンをクリックする
+SAP -> SAV : GET（）
+SAV --> SAP : 表示する
+
+' ③d ログイン画面に戻る
+alt 「ログイン」をクリックした場合
+  A -> SAP : 「ログイン」をクリックする
+  LP -> LV : GET（）
+  LV --> LP : 表示する
+end
+
+' ④ アカウント情報を入力する（③）
+A -> SAP : ③保護者名、メールアドレス、パスワード、確認用パスワードを入力し、\n「次へ」ボタンをクリックする
+SAP -> SAV : POST（保護者名、メールアドレス、パスワード、確認用パスワード、招待コード）
+
+alt 正しく入力され、招待コードが入力されていない場合
+  SAV --> SAP : リダイレクト（302：/accounts/signup/child/）
+  SCP -> SCV : GET（自動的な新しいリクエスト）
+  SCV --> SCP : 表示する
+else 正しく入力され、招待コードも入力した場合
+  SAV -> SAV : 「アカウントを連携する」の⑧に進む
+else 未入力の項目がある・メールアドレスの形式が正しくない場合
+  SAV --> SAP : 「次へ」ボタンを押せないようにする
+else パスワードが条件（8文字以上・英字と数字を含む）を満たしていない場合
+  SAV --> SAP : 条件を満たしていないことを表示し、\n「次へ」ボタンを押せないようにする
+else 確認用パスワードが一致しない場合
+  SAV --> SAP : 「パスワードが一致しません」と表示し、\n「次へ」ボタンを押せないようにする
+end
+
+' ⑤ 子どもの情報を入力する（④）
+A -> SCP : ④子どもの名前、生年月日、性別を入力し、\n「次へ」ボタンをクリックする
+SCP -> SCV : POST（子どもの名前、生年月日、性別）
+
+alt 入力されている場合
+  SCV --> SCP : リダイレクト（302：/accounts/signup/terms/）
+  STP -> STV : GET（自動的な新しいリクエスト）
+  STV --> STP : 表示する
+else 未入力の項目がある場合
+  SCV --> SCP : 「次へ」ボタンを押せないようにする
+end
+
+' ⑥ 利用規約に同意して登録する（⑤⑥⑦）
+A -> STP : ⑤利用規約とプライバシーポリシーに同意し、\n「同意して登録を完了する」ボタンをクリックする
+STP -> STV : POST（利用規約への同意、プライバシーポリシーへの同意）
+
+alt 同意していない場合
+  STV --> STP : 「同意して登録を完了する」ボタンを押せないようにする
+else 同意している場合
+  STV -> UM : メールアドレスデータを取得する（メールアドレス）
+  STV <-- UM : メールアドレスデータを返却
+  alt すでに登録されている場合
+    STV --> STP : リダイレクト（302：/accounts/signup/account/）
+    SAP -> SAV : GET（自動的な新しいリクエスト）
+    SAV --> SAP : 「このメールアドレスは既に使用されています」と表示する
+  else 登録されていない場合
+    STV -> UM : 利用者を登録する（保護者名、メールアドレス、パスワード）
+    STV <-- UM : 完了
+    STV -> BM : 育児対象者を登録する（子どもの名前、生年月日、性別）
+    STV <-- BM : 完了
+    STV -> STV : ログインした状態にする
+    STV --> STP : リダイレクト（302：/records/）
+    RLP -> RLV : GET（自動的な新しいリクエスト）
+    RLV --> RLP : 表示する
+  end
+end
+@enduml

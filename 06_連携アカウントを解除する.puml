@@ -1,0 +1,31 @@
+@startuml
+title 連携アカウントを解除する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者" as A
+boundary "base.html" as BP
+boundary "settings.html" as SP
+control "settings_view" as SV
+entity "Collaboration" as CM
+
+A -> BP : ①「設定」ボタンをクリックする
+SP -> SV : GET（）
+SV -> CM : 連携中のアカウントデータを取得する
+SV <-- CM : 連携中のアカウントデータを返却
+SV --> SP : 表示する（連携中のアカウント）
+
+A -> SP : ②「解除」ボタンをクリックする
+SP -> SP : 解除の確認メッセージを表示する
+
+alt 「キャンセル」ボタンをクリックした場合
+  A -> SP : 「キャンセル」ボタンをクリックする
+  SP -> SP : 確認メッセージを閉じる（連携を解除せずに②に戻る）
+else 「解除する」ボタンをクリックした場合
+  A -> SP : ③「解除する」ボタンをクリックする
+  SP -> SV : POST（解除するアカウント）
+  SV -> CM : 保護者の関係者のアカウントと保護者のアカウントの連携を解除する
+  SV <-- CM : 完了
+  SV --> SP : 解除完了メッセージを表示する
+end
+@enduml

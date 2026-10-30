@@ -1,0 +1,30 @@
+@startuml
+title 育児記録を削除する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "record_list.html" as RLP
+control "record_list_view" as RLV
+entity "Childcare_record" as CRM
+
+A -> RLP : ①「削除」ボタンをクリックする
+RLP -> RLP : 削除の確認メッセージを表示する
+
+alt 「キャンセル」ボタンをクリックした場合
+  A -> RLP : 「キャンセル」ボタンをクリックする
+  RLP -> RLP : 確認メッセージを閉じる（削除しない）
+else 「削除する」ボタンをクリックした場合
+  A -> RLP : ②「削除する」ボタンをクリックする
+  RLP -> RLV : POST（記録ID）
+  RLV -> CRM : 選択された記録内容を削除する（記録ID）
+  RLV <-- CRM : 完了
+  alt 削除に失敗した場合
+    RLV --> RLP : エラーを表示する
+  else 削除した場合
+    RLV --> RLP : リダイレクト（302：/records/）
+    RLP -> RLV : GET（自動的な新しいリクエスト）
+    RLV --> RLP : 表示する（削除完了メッセージ）
+  end
+end
+@enduml

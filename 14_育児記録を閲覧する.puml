@@ -1,0 +1,47 @@
+@startuml
+title 育児記録を閲覧する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "base.html" as BP
+boundary "record_list.html" as RLP
+control "record_list_view" as RLV
+entity "Childcare_record" as CRM
+
+A -> BP : ①「記録」ボタンをクリックする
+RLP -> RLV : GET（）
+RLV -> CRM : 育児記録のデータを取得する（表示する日）
+RLV <-- CRM : 育児記録データを返却
+alt 記録の取得に失敗した場合
+  RLV --> RLP : エラーを表示する
+else 表示する日の記録がない場合
+  RLV --> RLP : 「記録が登録されていません」と表示する
+else 表示する日の記録がある場合
+  RLV --> RLP : 表示する
+end
+
+alt 閲覧したい育児記録をクリックした場合
+  A -> RLP : ②閲覧したい育児記録をクリックする
+  RLP -> RLV : GET（記録ID）
+  RLV -> CRM : 選択された育児記録データを取得する（記録ID）
+  RLV <-- CRM : 選択された育児記録データを返却
+  RLV --> RLP : 詳細（編集ボタンと削除ボタン）を表示する
+else 「前の日」ボタンをクリックした場合
+  A -> RLP : 「前の日」ボタンをクリックする
+  RLP -> RLV : GET（前の日）
+  RLV -> CRM : 前の日の記録データを取得する（前の日）
+  RLV <-- CRM : 前の日の記録データを返却
+  RLV --> RLP : 表示する（③に戻る）
+else 「次の日」ボタンをクリックした場合
+  A -> RLP : 「次の日」ボタンをクリックする
+  RLP -> RLV : GET（次の日）
+  alt 表示中の日が今日の場合
+    RLV --> RLP : 日付を変更せずに表示する
+  else 今日ではない場合
+    RLV -> CRM : 次の日の記録データを取得する（次の日）
+    RLV <-- CRM : 次の日の記録データを返却
+    RLV --> RLP : 表示する（③に戻る）
+  end
+end
+@enduml

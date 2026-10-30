@@ -1,0 +1,22 @@
+@startuml
+title 鼻水を登録する
+skinparam defaultFontName "Noto Sans CJK JP"
+skinparam monochrome true
+
+actor "保護者/保護者の関係者" as A
+boundary "record_list.html" as RLP
+control "record_list_view" as RLV
+entity "Childcare_record" as CRM
+
+A -> RLP : ①鼻水ボタンをクリックする
+RLP -> RLV : POST（記録の種類：鼻水）
+RLV -> CRM : 鼻水を記録する（鼻水の記録、記録した時刻、記録者）
+RLV <-- CRM : 完了
+alt 記録の保存に失敗した場合
+  RLV --> RLP : エラーを表示する（記録画面に戻る）
+else 記録した場合
+  RLV --> RLP : リダイレクト（302：/records/）
+  RLP -> RLV : GET（自動的な新しいリクエスト）
+  RLV --> RLP : 「記録しました」と表示する
+end
+@enduml
