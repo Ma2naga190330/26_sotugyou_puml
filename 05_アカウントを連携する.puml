@@ -20,7 +20,7 @@ entity "User" as UM
 
 ' 保護者：招待コードを発行する
 A1 -> RLP : ①「設定」ボタンをクリックする
-SP -> SV : GET（）
+RLP -> SV : GET（）
 SV --> SP : 表示する
 
 A1 -> SP : ③「家族を招待する」を選択する

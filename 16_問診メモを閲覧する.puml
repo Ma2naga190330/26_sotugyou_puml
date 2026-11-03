@@ -13,7 +13,7 @@ entity "Medical_history" as MHM
 entity "Medical_interview" as MIM
 
 A -> BP : ①問診メモをクリックする
-MP -> MV : GET（）
+BP -> MV : GET（）
 MV -> BM : 子どもの基本情報データを取得する
 MV <-- BM : 子どもの基本情報データを返却
 MV -> AM : アレルギーデータを取得する

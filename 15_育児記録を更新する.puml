@@ -12,7 +12,7 @@ entity "Childcare_record" as CRM
 
 ' record_form.html：授乳の記録は feeding_form.html（同じ流れ）
 A -> RLP : ①「編集」ボタンをクリックする
-RFP -> RFV : GET（記録ID）
+RLP -> RFV : GET（記録ID）
 RFV -> CRM : 現在登録されている記録データを取得する（記録ID）
 RFV <-- CRM : 現在登録されている記録データを返却
 alt 記録の取得に失敗した場合
@@ -24,7 +24,7 @@ else 取得できた場合
 
   alt 「閉じる」ボタンをクリックした場合
     A -> RFP : 「閉じる」ボタンをクリックする
-    RLP -> RLV : GET（）
+    RFP -> RLV : GET（）
     RLV --> RLP : 表示する（保存しない）
   else 「保存する」ボタンをクリックした場合
     A -> RFP : ③データを修正し、「保存する」ボタンをクリックする

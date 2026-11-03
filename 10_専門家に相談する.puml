@@ -12,7 +12,7 @@ entity "User" as UM
 entity "Expert_consultation" as ECSM
 
 A -> CMP : ①「専門家に相談する」ボタンをクリックする
-ECP -> ECV : GET（）
+CMP -> ECV : GET（）
 alt 過去の相談がある場合
   ECV -> ECSM : これまでのやり取りデータを取得する
   ECV <-- ECSM : これまでのやり取りデータを返却
@@ -31,7 +31,7 @@ end
 
 alt 相談内容を送信せずに「戻る」ボタンをクリックした場合
   A -> ECP : 「戻る」ボタンをクリックする
-  CMP -> CMV : GET（）
+  ECP -> CMV : GET（）
   CMV --> CMP : 表示する
 else 相談内容を送信する場合
   A -> ECP : ④チャット欄に相談内容（メッセージ）を入力し、\n「送信」ボタンをクリックする
@@ -68,7 +68,7 @@ else 相談内容を送信する場合
           ECV --> ECP : 表示する（⑥に戻る）
         else 「戻る」ボタンをクリックした場合
           A -> ECP : 「戻る」ボタンをクリックする
-          CMP -> CMV : GET（）
+          ECP -> CMV : GET（）
           CMV --> CMP : 表示する
         end
       end

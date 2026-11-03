@@ -11,7 +11,7 @@ entity "Ai_consultation" as ACSM
 entity "Expert_consultation" as ECSM
 
 A -> RLP : ①「相談」ボタンをクリックする
-CMP -> CMV : GET（）
+RLP -> CMV : GET（）
 CMV -> ACSM : 相談履歴データを取得する
 CMV <-- ACSM : 相談履歴データを返却
 CMV -> ECSM : 相談履歴データを取得する

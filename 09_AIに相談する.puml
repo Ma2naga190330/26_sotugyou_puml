@@ -13,7 +13,7 @@ entity "Learning_model" as LMM
 entity "Childcare_record" as CRM
 
 A -> CMP : ①「AIに相談する」ボタンをクリックする
-ACP -> ACV : GET（）
+CMP -> ACV : GET（）
 alt 過去の相談履歴がある場合
   ACV -> ACSM : これまでのやり取りデータを取得する
   ACV <-- ACSM : これまでのやり取りデータを返却
@@ -22,7 +22,7 @@ ACV --> ACP : 表示する
 
 alt 相談内容を送信せずに「戻る」を選択した場合
   A -> ACP : 「戻る」を選択する
-  CMP -> CMV : GET（）
+  ACP -> CMV : GET（）
   CMV --> CMP : 表示する
 else 相談内容を送信する場合
   A -> ACP : ③チャット欄に相談内容（メッセージ）を入力し、\n「送信」ボタンをクリックする
@@ -41,7 +41,7 @@ else 相談内容を送信する場合
     ACV --> ACP : 回答メッセージを表示する（続けて相談する場合は③に戻る）
     alt 「戻る」を選択した場合
       A -> ACP : 「戻る」を選択する
-      CMP -> CMV : GET（）
+      ACP -> CMV : GET（）
       CMV --> CMP : 表示する
     end
   end

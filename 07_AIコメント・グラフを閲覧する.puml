@@ -11,7 +11,7 @@ entity "Childcare_record" as CRM
 entity "Chick" as CHM
 
 A -> RLP : ①「グラフ」ボタンをクリックする
-GP -> GV : GET（）
+RLP -> GV : GET（）
 GV -> CRM : 直近の育児記録データを取得する
 GV <-- CRM : 直近の育児記録データを返却
 

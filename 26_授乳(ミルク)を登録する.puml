@@ -11,7 +11,7 @@ control "feeding_form_view" as FFV
 entity "Childcare_record" as CRM
 
 A -> RLP : ①授乳ボタンをクリックする
-FFP -> FFV : GET（）
+RLP -> FFV : GET（）
 FFV --> FFP : 授乳記録画面を表示する
 
 A -> FFP : ③ミルクボタンをクリックする
@@ -26,7 +26,7 @@ end
 
 alt 授乳記録画面を閉じた場合
   A -> FFP : 授乳記録画面を閉じる
-  RLP -> RLV : GET（）
+  FFP -> RLV : GET（）
   RLV --> RLP : 表示する（保存しない）
 else 保存ボタンをクリックした場合
   A -> FFP : ⑥保存ボタンをクリックする

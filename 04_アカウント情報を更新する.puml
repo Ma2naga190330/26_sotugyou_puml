@@ -14,18 +14,18 @@ boundary "email_done.html" as EDP
 control "email_done_view" as EDV
 
 A -> BP : ①「設定」ボタンをクリックする
-SP -> SV : GET（）
+BP -> SV : GET（）
 SV --> SP : 表示する
 
 A -> SP : ③「アカウント情報を更新」ボタンをクリックする
-AEP -> AEV : GET（）
+SP -> AEV : GET（）
 AEV -> UM : 保護者名データとメールアドレスデータを取得する
 AEV <-- UM : 保護者名データとメールアドレスデータを返却
 AEV --> AEP : 表示する（現在の保護者名とメールアドレス）
 
 alt 「戻る」ボタンをクリックした場合
   A -> AEP : 「戻る」ボタンをクリックする
-  SP -> SV : GET（）
+  AEP -> SV : GET（）
   SV --> SP : 表示する（保存しない）
 else 変更したい項目を入力した場合
   A -> AEP : ⑤変更したい項目を入力する

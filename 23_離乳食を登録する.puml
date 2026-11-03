@@ -11,12 +11,12 @@ control "record_form_view" as RFV
 entity "Childcare_record" as CRM
 
 A -> RLP : ①離乳食ボタンをクリックする
-RFP -> RFV : GET（記録の種類：離乳食）
+RLP -> RFV : GET（記録の種類：離乳食）
 RFV --> RFP : 記録入力シートを表示する
 
 alt 記録入力シートを閉じた場合
   A -> RFP : 記録入力シートを閉じる
-  RLP -> RLV : GET（）
+  RFP -> RLV : GET（）
   RLV --> RLP : 表示する（保存しない）
 else 保存ボタンをクリックした場合
   A -> RFP : ③時刻、食べた物、量を記述して保存ボタンをクリックする

@@ -11,7 +11,7 @@ control "allergy_form_view" as AFV
 entity "Allergy" as AM
 
 A -> MP : ①アレルギーの登録をクリックする
-AFP -> AFV : GET（）
+MP -> AFV : GET（）
 AFV -> AM : 登録済みのアレルギーデータを取得する
 AFV <-- AM : 登録済みのアレルギーデータを返却
 AFV --> AFP : アレルギーの選択肢を、登録済みのものを選択した状態で表示する
@@ -25,7 +25,7 @@ end
 
 alt 戻るを選択した場合
   A -> AFP : 戻るを選択する
-  MP -> MV : GET（）
+  AFP -> MV : GET（）
   MV --> MP : 表示する（保存しない）
 else 登録をクリックした場合
   A -> AFP : ⑤登録をクリックする
