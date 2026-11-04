@@ -6,7 +6,7 @@ skinparam monochrome true
 actor "保護者/保護者の関係者/専門家" as A
 boundary "login.html" as LP
 control "login_view" as LV
-entity "User" as UM
+entity "Parent" as UM
 boundary "record_list.html" as RLP
 control "record_list_view" as RLV
 boundary "inbox.html" as IBP

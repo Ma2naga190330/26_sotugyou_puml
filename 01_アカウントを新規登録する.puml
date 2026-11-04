@@ -13,7 +13,7 @@ boundary "signup_child.html" as SCP
 control "signup_child_view" as SCV
 boundary "signup_terms.html" as STP
 control "signup_terms_view" as STV
-entity "User" as UM
+entity "Parent" as UM
 entity "Baby" as BM
 boundary "record_list.html" as RLP
 control "record_list_view" as RLV

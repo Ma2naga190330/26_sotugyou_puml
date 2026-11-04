@@ -9,7 +9,7 @@ boundary "settings.html" as SP
 control "settings_view" as SV
 boundary "account_edit.html" as AEP
 control "account_edit_view" as AEV
-entity "User" as UM
+entity "Parent" as UM
 boundary "email_done.html" as EDP
 control "email_done_view" as EDV
 

@@ -16,7 +16,7 @@ boundary "signup_account.html" as SAP
 control "signup_account_view" as SAV
 boundary "signup_terms.html" as STP
 control "signup_terms_view" as STV
-entity "User" as UM
+entity "Parent" as UM
 
 ' 保護者：招待コードを発行する
 A1 -> RLP : ①「設定」ボタンをクリックする

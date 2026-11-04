@@ -8,7 +8,7 @@ boundary "consult_menu.html" as CMP
 control "consult_menu_view" as CMV
 boundary "expert_chat.html" as ECP
 control "expert_chat_view" as ECV
-entity "User" as UM
+entity "Parent" as UM
 entity "Expert_consultation" as ECSM
 
 A -> CMP : ①「専門家に相談する」ボタンをクリックする
