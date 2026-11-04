@@ -11,7 +11,7 @@ boundary "settings.html" as SP
 control "settings_view" as SV
 entity "invite_code" as IM
 boundary "invite.html" as IP
-control "invite_view" as IV
+control "Invite_view" as IV
 boundary "signup_account.html" as SAP
 control "signup_account_view" as SAV
 entity "Collaboration" as CM
