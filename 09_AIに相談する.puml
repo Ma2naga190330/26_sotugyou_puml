@@ -10,7 +10,6 @@ boundary "ai_chat.html" as ACP
 control "ai_chat_view" as ACV
 entity "Ai_consultation" as ACSM
 entity "Learning_model" as LMM
-entity "Childcare_record" as CRM
 
 A -> CMP : ①「AIに相談する」ボタンをクリックする
 CMP -> ACV : GET（）
@@ -31,11 +30,9 @@ else 相談内容を送信する場合
     ACV --> ACP : 送信処理を行わず、エラーメッセージを表示する
   else 入力されている場合
     ACP -> ACP : 回答メッセージの生成中は、\n次の相談内容を送信できないように制御する
-    ACV -> LMM : 学習済みモデルを取得する
-    ACV <-- LMM : 学習済みモデルを返却
-    ACV -> CRM : 育児記録データを取得する
-    ACV <-- CRM : 育児記録データを返却
-    ACV -> ACV : 回答メッセージを生成する
+    ACV -> LMM : 相談内容を送信する（相談内容）
+    LMM -> LMM : 相談内容を参照し、回答を生成する
+    ACV <-- LMM : 回答メッセージを返却
     ACV -> ACSM : 相談内容と回答メッセージを登録する（相談内容、回答メッセージ）
     ACV <-- ACSM : 完了
     ACV --> ACP : 回答メッセージを表示する（続けて相談する場合は③に戻る）
