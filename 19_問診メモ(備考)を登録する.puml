@@ -8,14 +8,14 @@ boundary "memo.html" as MP
 control "memo_view" as MV
 boundary "note_form.html" as NFP
 control "note_form_view" as NFV
-entity "Medical_interview" as MIM
+entity "Medical_note" as MNM
 
 ' 最初の画面表示（問診メモ画面）
 A -> MP : 問診メモ画面を開く
 MP -> MV : GET（）
 MV --> MP : 表示する
 
-A -> MP : ②「メモを追加」ボタンをクリックする
+A -> MP : ②「備考を登録/メモを追加」ボタンをクリックする
 MP -> NFV : GET（）
 NFV --> NFP : 表示する（登録確認画面(入力)）
 
@@ -39,8 +39,8 @@ else 正しく入力されている場合
   else 「登録」ボタンをクリックした場合
     A -> NFP : ⑦「登録」ボタンをクリックする
     NFP -> NFV : POST（備考の内容）
-    NFV -> MIM : 備考を登録する（備考の内容）
-    NFV <-- MIM : 完了
+    NFV -> MNM : 備考を登録する（備考の内容）
+    NFV <-- MNM : 完了
     alt 保存に失敗した場合
       NFV --> NFP : エラーを表示する（③に戻る）
     else 保存した場合
