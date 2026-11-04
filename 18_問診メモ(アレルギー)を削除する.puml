@@ -6,19 +6,19 @@ skinparam monochrome true
 actor "保護者/保護者の関係者" as A
 boundary "memo.html" as MP
 control "memo_view" as MV
-entity "Allergy" as AM
+entity "Baby_allergy" as BAM
 
 A -> MP : ①アレルギー一覧で、削除するアレルギーの「削除」ボタンをクリックする
 MP -> MP : 削除の確認メッセージを表示する
 
 alt 「キャンセル」ボタンをクリックした場合
   A -> MP : 「キャンセル」ボタンをクリックする
-  MP -> MP : 確認メッセージを閉じ、問診メモ画面を表示する（削除しない）
+  MP -> MP : 削除の確認メッセージを閉じ、問診メモ画面を表示する（削除しない）
 else 「削除する」ボタンをクリックした場合
   A -> MP : ③「削除する」ボタンをクリックする
   MP -> MV : POST（アレルギーID）
-  MV -> AM : 選択されたアレルギーを削除する（アレルギーID）
-  MV <-- AM : 完了
+  MV -> BAM : 選択されたアレルギーを削除する（アレルギーID）
+  MV <-- BAM : 完了
   alt 削除に失敗した場合
     MV --> MP : エラーを表示し、問診メモ画面を表示する
   else 削除した場合

@@ -8,13 +8,15 @@ boundary "memo.html" as MP
 control "memo_view" as MV
 boundary "allergy_form.html" as AFP
 control "allergy_form_view" as AFV
-entity "Allergy" as AM
+entity "Allergen" as AM
+entity "Baby_allergy" as BAM
 
-' test
 A -> MP : ①アレルギーの登録をクリックする
 MP -> AFV : GET（）
-AFV -> AM : 登録済みのアレルギーデータを取得する
-AFV <-- AM : 登録済みのアレルギーデータを返却
+AFV -> AM : アレルギーデータを取得する
+AFV <-- AM : アレルギーデータを返却する
+AFV -> BAM : 登録済みのアレルギーデータを取得する
+AFV <-- BAM : 登録済みのアレルギーデータを返却する
 AFV --> AFP : アレルギーの選択肢を、登録済みのものを選択した状態で表示する
 
 A -> AFP : ④当てはまるアレルギーを選択する\n（当てはまらなくなったものは選択を外す）
@@ -34,14 +36,14 @@ else 登録をクリックした場合
   alt 「その他」が選択されているのに記述が未入力の場合
     AFV --> AFP : エラーを表示する（④に戻る）
   else 正しく入力されている場合
-    AFV -> AM : 選択されたアレルギーを登録する（「その他」の記述を含む）
-    AFV <-- AM : 完了
-    alt 保存に失敗した場合
-      AFV --> AFP : エラーを表示する（④に戻る）
-    else 保存した場合
-      AFV --> AFP : リダイレクト（302：/memos/）
+    AFV -> BAM : 選択されたアレルギーを登録する（「その他」の記述を含む）
+    AFV <-- BAM : 完了
+    alt 保存に成功した場合
+      MP <-- AFV : リダイレクト（302：/memos/）
       MP -> MV : GET（自動的な新しいリクエスト）
       MV --> MP : 表示する
+    else 保存に失敗した場合
+      AFV --> AFP : エラーを表示する（④に戻る）
     end
   end
 end
