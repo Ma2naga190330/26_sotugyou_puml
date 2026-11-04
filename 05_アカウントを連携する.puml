@@ -9,11 +9,12 @@ boundary "record_list.html" as RLP
 control "record_list_view" as RLV
 boundary "settings.html" as SP
 control "settings_view" as SV
-entity "Collaboration" as CM
+entity "invite_code" as IM
 boundary "invite.html" as IP
 control "invite_view" as IV
 boundary "signup_account.html" as SAP
 control "signup_account_view" as SAV
+entity "Collaboration" as CM
 boundary "signup_terms.html" as STP
 control "signup_terms_view" as STV
 entity "Parent" as UM
@@ -25,21 +26,21 @@ SV --> SP : 表示する
 
 A1 -> SP : ③「家族を招待する」を選択する
 SP -> SV : POST（家族を招待する）
-SV -> CM : 招待コードと有効期限を登録する（招待コード、有効期限）
-SV <-- CM : 完了
+SV -> IM : 招待コードと有効期限を登録する（招待コード、有効期限）
+SV <-- IM : 完了
 SV --> SP : リダイレクト（302：/accounts/settings/invite/）
 IP -> IV : GET（自動的な新しいリクエスト）
-IV -> CM : 招待コードデータと有効期限データを取得する
-IV <-- CM : 招待コードデータと有効期限データを返却
+IV -> IM : 招待コードデータと有効期限データを取得する
+IV <-- IM : 招待コードデータと有効期限データを返却
 IV --> IP : 表示する（招待コードと有効期限）
 
 alt 再発行を選択した場合
   A1 -> IP : 招待コードの再発行を選択する
   IP -> IV : POST（再発行）
-  IV -> CM : 現在の招待コードを無効に変える
-  IV <-- CM : 完了
-  IV -> CM : 招待コードと有効期限を登録する（④に戻る）
-  IV <-- CM : 完了
+  IV -> IM : 現在の招待コードを無効に変える
+  IV <-- IM : 完了
+  IV -> IM : 招待コードと有効期限を登録する（④に戻る）
+  IV <-- IM : 完了
   IV --> IP : 表示する（新しい招待コードと有効期限）
 end
 
@@ -52,8 +53,8 @@ alt 未入力の項目がある・メールアドレスの形式が正しくな�
 else 正しく入力された場合
   A2 -> SAP : 「次へ」ボタンをクリックする
   SAP -> SAV : POST（保護者名、メールアドレス、パスワード、確認用パスワード、招待コード）
-  SAV -> CM : 招待コードデータを取得する（招待コード）
-  SAV <-- CM : 招待コードデータを返却
+  SAV -> IM : 招待コードデータを取得する（招待コード）
+  SAV <-- IM : 招待コードデータを返却
   alt 存在しない・使用済みの場合
     SAV --> SAP : エラーを表示する（⑦に戻る）
   else 存在する場合
@@ -69,8 +70,8 @@ alt 同意していない場合
 else 同意している場合
   A2 -> STP : 「同意して登録を完了する」ボタンをクリックする
   STP -> STV : POST（利用規約への同意、プライバシーポリシーへの同意）
-  STV -> CM : 有効期限データを取得する（招待コード）
-  STV <-- CM : 有効期限データを返却
+  STV -> IM : 有効期限データを取得する（招待コード）
+  STV <-- IM : 有効期限データを返却
   alt 招待コードの有効期限が過ぎている場合
     STV --> STP : リダイレクト（302：/accounts/signup/）
     SAP -> SAV : GET（自動的な新しいリクエスト）
@@ -83,8 +84,8 @@ else 同意している場合
       SAP -> SAV : GET（自動的な新しいリクエスト）
       SAV --> SAP : 「このメールアドレスは既に使用されています」と表示する（⑦に戻る）
     else 登録されていない場合
-      STV -> CM : 招待コードを無効に変える
-      STV <-- CM : 完了
+      STV -> IM : 招待コードを無効に変える
+      STV <-- IM : 完了
       STV -> UM : 保護者の関係者のアカウントを登録する（保護者名、メールアドレス、パスワード）
       STV <-- UM : 完了
       STV -> CM : 連携を登録する
