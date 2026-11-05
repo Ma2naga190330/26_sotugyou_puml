@@ -5,11 +5,13 @@ skinparam monochrome true
 
 actor "保護者/保護者の関係者" as A
 boundary "record_list.html" as RLP
+control "record_list_view" as RLV
 boundary "graph.html" as GP
 control "graph_view" as GV
 entity "Childcare_record" as CRM
 entity "Ai_consultation" as ACM
 entity "Chick" as CHM
+RLP<-- RLV : 表示する
 A -> RLP : ①「グラフ」ボタンをクリックする
 RLP -> GV : GET（）
 GV -> CRM : 直近の育児記録データを取得する
