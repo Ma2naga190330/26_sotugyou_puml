@@ -8,7 +8,7 @@ boundary "memo.html" as MP
 control "memo_view" as MV
 boundary "note_form.html" as NFP
 control "note_form_view" as NFV
-entity "Medical_interview" as MIM
+entity "Medical_note" as MNM
 
 ' 最初の画面表示（問診メモ画面）
 A -> MP : 問診メモ画面を開く
@@ -17,8 +17,8 @@ MV --> MP : 表示する
 
 A -> MP : ②変更したい備考の「更新」ボタンをクリックする
 MP -> NFV : GET（備考ID）
-NFV -> MIM : 選択された備考データを取得する（備考ID）
-NFV <-- MIM : 選択された備考データを返却
+NFV -> MNM : 選択された備考データを取得する（備考ID）
+NFV <-- MNM : 選択された備考データを返却
 NFV --> NFP : 登録済みの内容を表示する（備考登録・変更画面）
 
 alt 「<」（戻るボタン）をクリックした場合
@@ -41,12 +41,12 @@ else 「登録確認」ボタンをクリックした場合
     else 「変更する」ボタンをクリックした場合
       A -> NFP : ⑦「変更する」ボタンをクリックする
       NFP -> NFV : POST（備考ID、備考の内容）
-      NFV -> MIM : 変更した備考を登録する（備考ID、備考の内容）
-      NFV <-- MIM : 完了
+      NFV -> MNM : 変更した備考を登録する（備考ID、備考の内容）
+      NFV <-- MNM : 完了
       alt 保存に失敗した場合
         NFV --> NFP : エラーを表示する（⑤に戻る）
       else 保存した場合
-        NFV --> NFP : リダイレクト（302：/memos/）
+        MP <-- NFV : リダイレクト（302：/memos/）
         MP -> MV : GET（自動的な新しいリクエスト）
         MV --> MP : 表示する
       end

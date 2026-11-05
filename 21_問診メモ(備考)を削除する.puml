@@ -6,7 +6,7 @@ skinparam monochrome true
 actor "保護者/保護者の関係者" as A
 boundary "memo.html" as MP
 control "memo_view" as MV
-entity "Medical_interview" as MIM
+entity "Medical_note" as MNM
 
 ' 最初の画面表示（問診メモ画面）
 A -> MP : 問診メモ画面を開く
@@ -15,8 +15,8 @@ MV --> MP : 表示する
 
 A -> MP : ②削除したい備考の「削除」ボタンをクリックする
 MP -> MV : GET（備考ID）
-MV -> MIM : 選択された備考データを取得する（備考ID）
-MV <-- MIM : 選択された備考データを返却
+MV -> MNM : 選択された備考データを取得する（備考ID）
+MV <-- MNM : 選択された備考データを返却
 MV --> MP : 削除の確認メッセージを表示する
 
 alt 「キャンセル」ボタンをクリックした場合
@@ -25,8 +25,8 @@ alt 「キャンセル」ボタンをクリックした場合
 else 「削除する」ボタンをクリックした場合
   A -> MP : ⑤「削除する」ボタンをクリックする
   MP -> MV : POST（備考ID）
-  MV -> MIM : 選択された備考を削除する（備考ID）
-  MV <-- MIM : 完了
+  MV -> MNM : 選択された備考を削除する（備考ID）
+  MV <-- MNM : 完了
   alt 削除に失敗した場合
     MV --> MP : エラーを表示し、問診メモ画面を表示する
   else 削除した場合

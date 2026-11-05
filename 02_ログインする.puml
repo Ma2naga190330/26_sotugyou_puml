@@ -6,7 +6,7 @@ skinparam monochrome true
 actor "保護者/保護者の関係者/専門家" as A
 boundary "login.html" as LP
 control "login_view" as LV
-entity "Parent" as UM
+entity "User" as UM
 boundary "record_list.html" as RLP
 control "record_list_view" as RLV
 boundary "inbox.html" as IBP
@@ -23,12 +23,12 @@ alt 未入力の場合
   LV --> LP : 「メールアドレスとパスワードを入力してください」と表示する
 else 入力されている場合
   LV -> UM : 利用者データを取得する（メールアドレス）
-  LV <-- UM : メールアドレスデータ・パスワードデータを返却
+  LV <-- UM : 利用者データ(メールアドレス・パスワードなど)を返却
   LV -> LV : ログイン処理を実行する
   alt メールアドレスまたはパスワードが誤っている場合
     LV --> LP : 「ログイン情報が正しくありません」と表示し、再入力を促す
   else 正しい場合
-    LV -> UM : 種別データを取得する
+    LV -> UM : 種別データ(保護者または専門家)を取得する
     LV <-- UM : 種別データを返却
     alt 専門家ではない場合
       LV --> LP : リダイレクト（302：/records/）
