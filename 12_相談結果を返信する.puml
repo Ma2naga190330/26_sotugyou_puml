@@ -9,6 +9,7 @@ control "inbox_view" as IBV
 boundary "chat.html" as CP
 control "chat_view" as CV
 entity "Expert_consultation" as ECSM
+entity "Expert_message" as EMM
 
 A -> IBP : ①返信したい相談をクリックする
 IBP -> IBV : GET（相談）
@@ -29,13 +30,13 @@ else 対応中ではない場合
     alt 返信内容が未入力の場合
       CV --> CP : 送信しない
     else 入力されている場合
-      CV -> ECSM : 返信内容を登録する（返信内容）
-      CV <-- ECSM : 完了
       alt 登録に失敗した場合
         CV --> CP : エラーを表示し、入力した返信内容を残したまま④に戻る
       else 登録した場合
         CV -> ECSM : 未返信を返信済みに変える
         CV <-- ECSM : 完了
+        CV -> EMM : 返信内容を登録する（返信内容）
+        CV <-- EMM : 完了
         CV -> CV : 保護者に返信があったことを通知する
         CV --> CP : 「送信済み」と「送信時刻」を表示する（専門家が続けてメッセージを送る場合は④に戻る）
       end
