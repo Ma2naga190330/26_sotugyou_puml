@@ -9,7 +9,7 @@ control "consult_menu_view" as CMV
 boundary "ai_chat.html" as ACP
 control "ai_chat_view" as ACV
 entity "Ai_consultation" as ACSM
-control "Learning_view" as LV
+control "learning_view" as LV
 
 A -> CMP : ①「AIに相談する」ボタンをクリックする
 CMP -> ACV : GET（）
