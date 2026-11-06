@@ -2,14 +2,14 @@
 title AIに相談する
 skinparam defaultFontName "Noto Sans CJK JP"
 skinparam monochrome true
-
+' Learningモデルの修正
 actor "保護者/保護者の関係者" as A
 boundary "consult_menu.html" as CMP
 control "consult_menu_view" as CMV
 boundary "ai_chat.html" as ACP
 control "ai_chat_view" as ACV
 entity "Ai_consultation" as ACSM
-entity "Learning_model" as LMM
+control "Learning_view" as LV
 
 A -> CMP : ①「AIに相談する」ボタンをクリックする
 CMP -> ACV : GET（）
@@ -30,9 +30,9 @@ else 相談内容を送信する場合
     ACV --> ACP : 送信処理を行わず、エラーメッセージを表示する
   else 入力されている場合
     ACP -> ACP : 回答メッセージの生成中は、\n次の相談内容を送信できないように制御する
-    ACV -> LMM : 相談内容を送信する（相談内容）
-    LMM -> LMM : 相談内容を参照し、回答を生成する
-    ACV <-- LMM : 回答メッセージを返却
+    ACV -> LV : 相談内容を送信する（相談内容）
+    LV -> LV : 相談内容を参照し、回答を生成する
+    ACV <-- LV : 回答メッセージを返却
     ACV -> ACSM : 相談内容と回答メッセージを登録する（相談内容、回答メッセージ）
     ACV <-- ACSM : 完了
     ACV --> ACP : 回答メッセージを表示する（続けて相談する場合は③に戻る）
