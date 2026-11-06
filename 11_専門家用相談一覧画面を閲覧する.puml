@@ -6,14 +6,15 @@ skinparam monochrome true
 actor "専門家" as A
 boundary "inbox.html" as IBP
 control "inbox_view" as IBV
+entity "Expert_message" as EMEM
 entity "Expert_consultation" as ECSM
 entity "Parent" as UM
 
 ' 最初の画面表示（起点の操作は記述にない）
 A -> IBP : 専門家用 相談一覧画面を開く
 IBP -> IBV : GET（）
-IBV -> ECSM : 相談データを取得する
-IBV <-- ECSM : 相談データを返却
+IBV -> EMEM : 相談データを取得する
+IBV <-- EMEM : 相談データを返却
 IBV -> UM : 質問者の名前データを取得する
 IBV <-- UM : 質問者の名前データを返却
 alt 未返信の相談がない場合
@@ -29,8 +30,8 @@ end
 alt 返信済みの相談を選択した場合
   A -> IBP : 返信済みの相談を選択する
   IBP -> IBV : GET（相談）
-  IBV -> ECSM : 質問者名データとチャット内容の一部データを取得する（相談）
-  IBV <-- ECSM : 質問者名データとチャット内容の一部データを返却
+  IBV -> EMEM : 質問者名データとチャット内容の一部データを取得する（相談）
+  IBV <-- EMEM : 質問者名データとチャット内容の一部データを返却
   IBV --> IBP : 過去の相談履歴を表示する
 else 対応中の相談をクリックした場合
   A -> IBP : 対応中の相談をクリックする

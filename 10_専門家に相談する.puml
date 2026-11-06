@@ -10,12 +10,13 @@ boundary "expert_chat.html" as ECP
 control "expert_chat_view" as ECV
 entity "Parent" as UM
 entity "Expert_consultation" as ECSM
+entity "Expert_message" as EMEM
 
 A -> CMP : ①「専門家に相談する」ボタンをクリックする
 CMP -> ECV : GET（）
 alt 過去の相談がある場合
-  ECV -> ECSM : これまでのやり取りデータを取得する
-  ECV <-- ECSM : これまでのやり取りデータを返却
+  ECV -> EMEM : これまでのやり取りデータを取得する
+  ECV <-- EMEM : これまでのやり取りデータを返却
 end
 ECV -> ECV : 保護者のユーザー名を匿名として表示する
 ECV --> ECP : 表示する
@@ -54,8 +55,8 @@ else 相談内容を送信する場合
 
       A -> ECP : ⑥「<」（戻るボタン）をクリックする
       ECP -> ECV : GET（戻る）
-      ECV -> ECSM : 返信データを取得する
-      ECV <-- ECSM : 返信データを返却
+      ECV -> EMEM : 返信データを取得する
+      ECV <-- EMEM : 返信データを返却
       alt 専門家から返信がある場合
         ECV --> ECP : リダイレクト（302：/consults/）
         CMP -> CMV : GET（自動的な新しいリクエスト）
