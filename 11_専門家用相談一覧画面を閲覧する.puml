@@ -7,7 +7,7 @@ actor "専門家" as A
 boundary "inbox.html" as IBP
 control "inbox_view" as IBV
 entity "Expert_message" as EMEM
-entity "Expert_consultation" as ECSM
+' entity "Expert_consultation" as ECSM
 entity "Parent" as UM
 
 ' 最初の画面表示（起点の操作は記述にない）
