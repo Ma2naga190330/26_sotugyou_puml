@@ -8,7 +8,6 @@ boundary "base.html" as BP
 boundary "memo.html" as MP
 control "memo_view" as MV
 entity "Baby" as BM
-entity "Allergen" as AM
 entity "Baby_allergy" as BAM
 ' 育児記録--病歴/受診歴
 entity "childcare_record" as CM
@@ -19,8 +18,8 @@ A -> BP : ①問診メモをクリックする
 BP -> MV : GET（）
 MV -> BM : 子どもの基本情報データを取得する
 MV <-- BM : 子どもの基本情報データを返却
-MV -> AM : アレルギーデータを取得する
-MV <-- AM : アレルギーデータを返却
+MV -> BAM : アレルギーデータを取得する
+MV <-- BAM : アレルギーデータを返却
 MV -> CM : 病歴・受診歴データを取得する
 MV <-- CM : 病歴・受診歴データを返却
 MV -> MNM : その他メモデータを取得する
