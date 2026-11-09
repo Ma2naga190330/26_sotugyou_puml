@@ -7,7 +7,7 @@ actor "保護者/保護者の関係者" as A
 boundary "memo.html" as MP
 control "memo_view" as MV
 boundary "note_form.html" as NFP
-control "note_form_view" as NFV
+control "note_create_view" as NCV
 entity "Medical_note" as MNM
 
 ' 最初の画面表示（問診メモ画面）
@@ -16,35 +16,35 @@ MP -> MV : GET（）
 MV --> MP : 表示する
 
 A -> MP : ②「備考を登録/メモを追加」ボタンをクリックする
-MP -> NFV : GET（）
-NFV --> NFP : 表示する（登録確認画面(入力)）
+MP -> NCV : GET（）
+NCV --> NFP : 表示する（登録確認画面(入力)）
 
 A -> NFP : ④備考欄に内容を記入する
 A -> NFP : ⑤「登録確認」ボタンをクリックする
-NFP -> NFV : POST（備考の内容）
+NFP -> NCV : POST（備考の内容）
 alt 内容が未入力の場合
-  NFV --> NFP : エラーを表示する（③に戻る）
+  NCV --> NFP : エラーを表示する（③に戻る）
 else 500文字を超えている場合
-  NFV --> NFP : エラーを表示する（③に戻る）
+  NCV --> NFP : エラーを表示する（③に戻る）
 else 正しく入力されている場合
-  NFV --> NFP : 表示する（登録確認画面(確認)）
+  NCV --> NFP : 表示する（登録確認画面(確認)）
   alt 「修正」ボタンをクリックした場合
     A -> NFP : 「修正」ボタンをクリックする
-    NFP -> NFV : GET（備考の内容）
-    NFV --> NFP : 入力した内容を表示する（③に戻る）
+    NFP -> NCV : GET（備考の内容）
+    NCV --> NFP : 入力した内容を表示する（③に戻る）
   else 「<」（前のページに戻るボタン）をクリックした場合
     A -> NFP : 「<」（前のページに戻るボタン）をクリックする
-    NFP -> NFV : GET（備考の内容）
-    NFV --> NFP : 入力した内容を表示する（③に戻る）
+    NFP -> NCV : GET（備考の内容）
+    NCV --> NFP : 入力した内容を表示する（③に戻る）
   else 「登録」ボタンをクリックした場合
     A -> NFP : ⑦「登録」ボタンをクリックする
-    NFP -> NFV : POST（備考の内容）
-    NFV -> MNM : 備考を登録する（備考の内容）
-    NFV <-- MNM : 完了
+    NFP -> NCV : POST（備考の内容）
+    NCV -> MNM : 備考を登録する（備考の内容）
+    NCV <-- MNM : 完了
     alt 保存に失敗した場合
-      NFV --> NFP : エラーを表示する（③に戻る）
+      NCV --> NFP : エラーを表示する（③に戻る）
     else 保存した場合
-      MP <-- NFV : リダイレクト（302：/memos/）
+      MP <-- NCV : リダイレクト（302：/memos/）
       MP -> MV : GET（自動的な新しいリクエスト）
       MV --> MP : 表示する
     end
