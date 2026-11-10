@@ -5,6 +5,7 @@ skinparam monochrome true
 
 actor "保護者" as A1
 actor "保護者の関係者" as A2
+boundary "base.html" as BP
 boundary "record_list.html" as RLP
 control "record_list_view" as RLV
 boundary "settings.html" as SP
@@ -20,10 +21,8 @@ control "signup_terms_view" as STV
 entity "Parent" as UM
 
 ' 保護者：招待コードを発行する
-A1 -> RLP : ①「設定」ボタンをクリックする
-RLP -> SV : GET（）
-SV --> SP : 表示する
-
+A1 -> BP : ①「設定」ボタンをクリックする
+BP -> SV : GET ()
 A1 -> SP : ③「家族を招待する」を選択する
 SP -> SV : POST（家族を招待する）
 SV -> IM : 招待コードと有効期限を登録する（招待コード、有効期限）

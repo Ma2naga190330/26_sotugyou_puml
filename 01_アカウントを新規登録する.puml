@@ -19,8 +19,6 @@ boundary "record_list.html" as RLP
 control "record_list_view" as RLV
 
 ' ② 最初の画面表示（ログイン画面）
-A -> LP : ログイン画面を開く
-LP -> LV : GET（）
 LV --> LP : 表示する
 
 ' ③ 新規登録（アカウント）画面を表示する（①②）
